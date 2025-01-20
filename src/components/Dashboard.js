@@ -146,7 +146,7 @@ function Dashboard() {
         />
         <StatCard
           title="Total Amount"
-          value={formatCurrency(stats.totalTransactionAmount)}
+          value={stats.totalTransactionAmount ? formatCurrency(stats.totalTransactionAmount) : 'No records'}
           icon="₹"
           isLoading={loading}
           color="bg-gradient-to-br from-amber-500 to-amber-600"
