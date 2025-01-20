@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Dashboard() {
   const [stats, setStats] = useState({
@@ -13,6 +14,7 @@ function Dashboard() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchDashboardStats();
@@ -46,11 +48,11 @@ function Dashboard() {
     return ((current - previous) / previous * 100).toFixed(1);
   };
 
-  const StatCard = ({ title, value, icon, subValue, isLoading, color, previousValue }) => {
+  const StatCard = ({ title, value, icon, subValue, isLoading, color, previousValue, onClick }) => {
     const growth = calculateGrowth(value, previousValue);
     
     return (
-      <div className="relative group">
+      <div className="relative group" onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default' }}>
         <div className={`bg-white rounded-2xl shadow-sm group-hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100`}>
           <div className={`px-6 py-5 ${color}`}>
             <div className="flex items-center justify-between">
@@ -125,6 +127,7 @@ function Dashboard() {
           isLoading={loading}
           color="bg-gradient-to-br from-violet-500 to-violet-600"
           previousValue={stats.totalUsers - stats.lastWeekUsers}
+          onClick={() => navigate('/users')}
         />
         <StatCard
           title="Total Books"
@@ -134,6 +137,7 @@ function Dashboard() {
           isLoading={loading}
           color="bg-gradient-to-br from-blue-500 to-blue-600"
           previousValue={stats.totalBooks - stats.lastWeekBooks}
+          onClick={() => navigate('/books')}
         />
         <StatCard
           title="Total Transactions"
@@ -143,6 +147,7 @@ function Dashboard() {
           isLoading={loading}
           color="bg-gradient-to-br from-emerald-500 to-emerald-600"
           previousValue={stats.totalTransactions - stats.lastWeekTransactions}
+          onClick={() => navigate('/transactions')}
         />
         <StatCard
           title="Total Amount"
@@ -150,6 +155,7 @@ function Dashboard() {
           icon="₹"
           isLoading={loading}
           color="bg-gradient-to-br from-amber-500 to-amber-600"
+          onClick={() => navigate('/transactions')}
         />
       </div>
 
@@ -167,7 +173,10 @@ function Dashboard() {
           <div className="text-2xl mb-4">📱</div>
           <h3 className="text-lg font-semibold text-gray-900 mb-2">Manage Users</h3>
           <p className="text-gray-600 mb-4">View and manage user accounts and permissions</p>
-          <button className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-500">
+          <button 
+            onClick={() => navigate('/users')}
+            className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-500"
+          >
             Manage Users <span className="ml-2">→</span>
           </button>
         </div>
