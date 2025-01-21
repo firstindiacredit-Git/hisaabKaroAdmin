@@ -1,0 +1,39 @@
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-y: scroll;
+    ::selection {
+      background-color: #b64aac; /* Change this to your desired color */
+      color: #ffffff; /* Optional: change text color */
+    }
+  }
+  
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  body::-webkit-scrollbar,
+  div::-webkit-scrollbar,
+  *::-webkit-scrollbar {
+    width: 0 !important;
+    display: none !important;
+    background: transparent !important;
+  }
+  
+  /* Hide scrollbar for Firefox */
+  body, div, * {
+    scrollbar-width: none !important;
+    scrollbar-color: transparent transparent !important;
+  }
+  
+  /* Hide scrollbar for IE and Edge */
+  body, div, * {
+    -ms-overflow-style: none !important;
+  }
+  
+  code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+      monospace;
+  }
+  

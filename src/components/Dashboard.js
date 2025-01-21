@@ -7,7 +7,7 @@ function Dashboard() {
     totalUsers: 0,
     totalBooks: 0,
     totalTransactions: 0,
-    totalTransactionAmount: 0,
+    totalAmount: 0,
     lastWeekUsers: 0,
     lastWeekBooks: 0,
     lastWeekTransactions: 0,
@@ -151,7 +151,7 @@ function Dashboard() {
         />
         <StatCard
           title="Total Amount"
-          value={stats.totalTransactionAmount ? formatCurrency(stats.totalTransactionAmount) : 'No records'}
+          value={stats.totalAmount !== undefined && stats.totalAmount !== null ? formatCurrency(stats.totalAmount) : 'No records'}
           icon="₹"
           isLoading={loading}
           color="bg-gradient-to-br from-amber-500 to-amber-600"
