@@ -1,120 +1,270 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import ResponseModal from './common/ResponseModal';
+import {
+  Box,
+  Drawer,
+  AppBar,
+  Toolbar,
+  List,
+  Typography,
+  Divider,
+  IconButton,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  useTheme,
+  Button,
+  Avatar,
+  Tooltip,
+  Container,
+  CssBaseline
+} from '@mui/material';
+import {
+  Menu as MenuIcon,
+  Dashboard as DashboardIcon,
+  People as PeopleIcon,
+  MenuBook as MenuBookIcon,
+  AccountBalanceWallet as WalletIcon,
+  ExitToApp as LogoutIcon,
+  ChevronLeft as ChevronLeftIcon
+} from '@mui/icons-material';
+
+const drawerWidth = 280;
 
 function Layout({ children }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { logout } = useAuth();
+  const theme = useTheme();
 
   const menuItems = [
-    { text: 'Dashboard', icon: '📊', path: '/' },
-    { text: 'Users', icon: '👥', path: '/users' },
-    { text: 'Books', icon: '📚', path: '/books' },
-    { text: 'Transactions', icon: '💰', path: '/transactions' },
+    { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
+    { text: 'Users', icon: <PeopleIcon />, path: '/users' },
+    { text: 'Books', icon: <MenuBookIcon />, path: '/books' },
+    { text: 'Transactions', icon: <WalletIcon />, path: '/transactions' },
   ];
+
+  const handleLogout = async () => {
+    try {
+      setModalOpen(true);
+      await new Promise(resolve => setTimeout(resolve, 100));
+      logout();
+      await new Promise(resolve => setTimeout(resolve, 900));
+      setModalOpen(false);
+      navigate('/login', { replace: true });
+    } catch (error) {
+      console.error('Logout error:', error);
+      setModalOpen(false);
+    }
+  };
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+    navigate('/login', { replace: true });
+  };
 
   const isActivePath = (path) => {
     return location.pathname === path;
   };
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Sidebar for mobile */}
-      <div className={`${isSidebarOpen ? 'block' : 'hidden'} fixed inset-0 z-40 lg:hidden`} role="dialog" aria-modal="true">
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-75 transition-opacity"></div>
-        <div className="fixed inset-0 flex z-40">
-          <div className="relative flex-1 flex flex-col max-w-xs w-full pt-5 pb-4 bg-white">
-            <div className="absolute top-0 right-0 -mr-12 pt-2">
-              <button
-                type="button"
-                className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-                onClick={() => setIsSidebarOpen(false)}
-              >
-                <span className="sr-only">Close sidebar</span>
-                <span className="text-white text-2xl">×</span>
-              </button>
-            </div>
-            <div className="flex-shrink-0 flex items-center px-6">
-              <h1 className="text-2xl font-bold text-indigo-600">HisaabKaro</h1>
-            </div>
-            <div className="mt-8 flex-1 h-0 overflow-y-auto">
-              <nav className="px-3 space-y-1">
-                {menuItems.map((item) => (
-                  <a
-                    key={item.text}
-                    onClick={() => {
-                      navigate(item.path);
-                      setIsSidebarOpen(false);
-                    }}
-                    className={`group flex items-center px-4 py-3 text-base font-medium rounded-lg cursor-pointer transition-colors duration-150 ${
-                      isActivePath(item.path)
-                        ? 'bg-indigo-50 text-indigo-600'
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                    }`}
-                  >
-                    <span className="mr-4 text-xl">{item.icon}</span>
-                    {item.text}
-                  </a>
-                ))}
-              </nav>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Static sidebar for desktop */}
-      <div className="hidden lg:flex lg:w-72 lg:flex-col lg:fixed lg:inset-y-0">
-        <div className="flex flex-col flex-grow pt-5 bg-white overflow-y-auto shadow-lg">
-          <div className="flex items-center flex-shrink-0 px-6">
-            <h1 className="text-2xl font-bold text-indigo-600">HisaabKaro</h1>
-          </div>
-          <div className="mt-8 flex-1 flex flex-col">
-            <nav className="flex-1 px-3 space-y-1">
-              {menuItems.map((item) => (
-                <a
-                  key={item.text}
-                  onClick={() => navigate(item.path)}
-                  className={`group flex items-center px-4 py-3 text-sm font-medium rounded-lg cursor-pointer transition-colors duration-150 ${
-                    isActivePath(item.path)
-                      ? 'bg-indigo-50 text-indigo-600'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                  }`}
-                >
-                  <span className="mr-3 text-xl">{item.icon}</span>
-                  {item.text}
-                </a>
-              ))}
-            </nav>
-          </div>
-        </div>
-      </div>
-
-      {/* Main content */}
-      <div className="lg:pl-72 flex flex-col flex-1">
-        <div className="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-white shadow-sm">
-          <button
-            type="button"
-            className="px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 lg:hidden"
-            onClick={() => setIsSidebarOpen(true)}
+  const drawer = (
+    <>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: theme.spacing(2),
+        }}
+      >
+        <Typography variant="h5" sx={{ fontWeight: 600, color: theme.palette.primary.main }}>
+          HisaabKaro
+        </Typography>
+        <IconButton onClick={() => setIsSidebarOpen(false)} sx={{ display: { lg: 'none' } }}>
+          <ChevronLeftIcon />
+        </IconButton>
+      </Box>
+      <Divider />
+      <List sx={{ mt: 2 }}>
+        {menuItems.map((item) => (
+          <ListItem
+            button
+            key={item.text}
+            onClick={() => {
+              navigate(item.path);
+              setIsSidebarOpen(false);
+            }}
+            sx={{
+              mb: 1,
+              mx: 1,
+              borderRadius: 1,
+              backgroundColor: isActivePath(item.path) ? theme.palette.primary.light : 'transparent',
+              color: isActivePath(item.path) ? theme.palette.primary.main : theme.palette.text.primary,
+              '&:hover': {
+                backgroundColor: isActivePath(item.path) 
+                  ? theme.palette.primary.light 
+                  : theme.palette.action.hover,
+              }
+            }}
           >
-            <span className="sr-only">Open sidebar</span>
-            <span className="text-2xl">☰</span>
-          </button>
-          <div className="flex-1 px-4 flex justify-between">
-            <div className="flex-1 flex items-center">
-              <h1 className="text-2xl font-semibold text-gray-900">
-                {menuItems.find(item => isActivePath(item.path))?.text || 'Dashboard'}
-              </h1>
-            </div>
-          </div>
-        </div>
-        <main className="flex-1 pb-8">
-          <div className="mt-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {children}
-          </div>
-        </main>
-      </div>
-    </div>
+            <ListItemIcon sx={{ 
+              color: isActivePath(item.path) ? theme.palette.primary.main : theme.palette.text.primary 
+            }}>
+              {item.icon}
+            </ListItemIcon>
+            <ListItemText 
+              primary={item.text} 
+              primaryTypographyProps={{ 
+                fontWeight: isActivePath(item.path) ? 600 : 400 
+              }}
+            />
+          </ListItem>
+        ))}
+      </List>
+      <Box sx={{ mt: 'auto', p: 2 }}>
+        <Divider sx={{ mb: 2 }} />
+        <Button
+          onClick={handleLogout}
+          fullWidth
+          variant="outlined"
+          color="primary"
+          startIcon={<LogoutIcon />}
+          sx={{
+            justifyContent: 'flex-start',
+            px: 2,
+            py: 1
+          }}
+        >
+          Logout
+        </Button>
+      </Box>
+    </>
+  );
+
+  return (
+    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+      <CssBaseline />
+      
+      {/* AppBar */}
+      <AppBar
+        position="fixed"
+        sx={{
+          width: { lg: `calc(100% - ${drawerWidth}px)` },
+          ml: { lg: `${drawerWidth}px` },
+          bgcolor: 'white',
+          boxShadow: 'none',
+          borderBottom: '1px solid',
+          borderColor: 'divider'
+        }}
+      >
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            edge="start"
+            onClick={() => setIsSidebarOpen(true)}
+            sx={{ mr: 2, display: { lg: 'none' }, color: 'text.primary' }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Box sx={{ flexGrow: 1 }} />
+          <Tooltip title="Admin">
+            <Avatar
+              sx={{
+                bgcolor: theme.palette.primary.main,
+                width: 40,
+                height: 40
+              }}
+            >
+              A
+            </Avatar>
+          </Tooltip>
+        </Toolbar>
+      </AppBar>
+
+      <Box
+        component="nav"
+        sx={{
+          width: { lg: drawerWidth },
+          flexShrink: { lg: 0 }
+        }}
+      >
+        {/* Mobile drawer */}
+        <Drawer
+          variant="temporary"
+          open={isSidebarOpen}
+          onClose={() => setIsSidebarOpen(false)}
+          ModalProps={{
+            keepMounted: true // Better mobile performance
+          }}
+          sx={{
+            display: { xs: 'block', lg: 'none' },
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
+              width: drawerWidth,
+              bgcolor: 'background.paper',
+              backgroundImage: 'none'
+            },
+          }}
+        >
+          {drawer}
+        </Drawer>
+        
+        {/* Desktop drawer */}
+        <Drawer
+          variant="permanent"
+          sx={{
+            display: { xs: 'none', lg: 'block' },
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
+              width: drawerWidth,
+              bgcolor: 'background.paper',
+              backgroundImage: 'none',
+              border: 'none',
+              boxShadow: theme.shadows[1]
+            },
+          }}
+          open
+        >
+          {drawer}
+        </Drawer>
+      </Box>
+
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          height: '100vh',
+          overflow: 'auto',
+          backgroundColor: '#f5f7fb',
+          display: 'flex',
+          flexDirection: 'column'
+        }}
+      >
+        <Toolbar /> {/* Spacing for AppBar */}
+        <Container 
+          maxWidth="xl" 
+          sx={{ 
+            flexGrow: 1,
+            py: 4,
+            px: { xs: 2, sm: 4 },
+            overflowY: 'auto'
+          }}
+        >
+          {children}
+        </Container>
+      </Box>
+
+      <ResponseModal
+        open={modalOpen}
+        onClose={handleModalClose}
+        success={true}
+        message="Logging out... Please wait"
+      />
+    </Box>
   );
 }
 
