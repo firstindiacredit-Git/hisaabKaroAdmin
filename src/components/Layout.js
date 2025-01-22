@@ -5,8 +5,6 @@ import ResponseModal from './common/ResponseModal';
 import {
   Box,
   Drawer,
-  AppBar,
-  Toolbar,
   List,
   Typography,
   Divider,
@@ -19,7 +17,12 @@ import {
   Avatar,
   Tooltip,
   Container,
-  CssBaseline
+  CssBaseline,
+  Fade,
+  Zoom,
+  alpha,
+  Badge,
+  Paper
 } from '@mui/material';
 import {
   Menu as MenuIcon,
@@ -28,7 +31,11 @@ import {
   MenuBook as MenuBookIcon,
   AccountBalanceWallet as WalletIcon,
   ExitToApp as LogoutIcon,
-  ChevronLeft as ChevronLeftIcon
+  ChevronLeft as ChevronLeftIcon,
+  Settings as SettingsIcon,
+  Notifications as NotificationsIcon,
+  Search as SearchIcon,
+  Book as BookIcon
 } from '@mui/icons-material';
 
 const drawerWidth = 280;
@@ -43,9 +50,8 @@ function Layout({ children }) {
 
   const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
+    { text: 'Books', icon: <BookIcon />, path: '/books' },
     { text: 'Users', icon: <PeopleIcon />, path: '/users' },
-    { text: 'Books', icon: <MenuBookIcon />, path: '/books' },
-    { text: 'Transactions', icon: <WalletIcon />, path: '/transactions' },
   ];
 
   const handleLogout = async () => {
@@ -73,118 +79,197 @@ function Layout({ children }) {
 
   const drawer = (
     <>
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: theme.spacing(2),
-        }}
-      >
-        <Typography variant="h5" sx={{ fontWeight: 600, color: theme.palette.primary.main }}>
-          HisaabKaro
-        </Typography>
-        <IconButton onClick={() => setIsSidebarOpen(false)} sx={{ display: { lg: 'none' } }}>
-          <ChevronLeftIcon />
-        </IconButton>
-      </Box>
-      <Divider />
-      <List sx={{ mt: 2 }}>
-        {menuItems.map((item) => (
-          <ListItem
-            button
-            key={item.text}
-            onClick={() => {
-              navigate(item.path);
-              setIsSidebarOpen(false);
-            }}
-            sx={{
-              mb: 1,
-              mx: 1,
-              borderRadius: 1,
-              backgroundColor: isActivePath(item.path) ? theme.palette.primary.light : 'transparent',
-              color: isActivePath(item.path) ? theme.palette.primary.main : theme.palette.text.primary,
+      <Zoom in={true} style={{ transitionDelay: '100ms' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: theme.spacing(3, 2),
+            background: `linear-gradient(45deg, ${alpha(theme.palette.primary.main, 0.05)}, ${alpha(theme.palette.primary.light, 0.1)})`,
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            <Avatar
+              sx={{
+                width: 42,
+                height: 42,
+                background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
+                boxShadow: '0 2px 12px rgba(0,0,0,0.1)'
+              }}
+            >
+              H
+            </Avatar>
+            <Typography 
+              variant="h5" 
+              sx={{ 
+                fontWeight: 700,
+                background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                letterSpacing: '0.5px'
+              }}
+            >
+              HisaabKaro
+            </Typography>
+          </Box>
+          <IconButton 
+            onClick={() => setIsSidebarOpen(false)} 
+            sx={{ 
+              display: { lg: 'none' },
               '&:hover': {
-                backgroundColor: isActivePath(item.path) 
-                  ? theme.palette.primary.light 
-                  : theme.palette.action.hover,
+                background: alpha(theme.palette.primary.main, 0.1)
               }
             }}
           >
-            <ListItemIcon sx={{ 
-              color: isActivePath(item.path) ? theme.palette.primary.main : theme.palette.text.primary 
-            }}>
-              {item.icon}
-            </ListItemIcon>
-            <ListItemText 
-              primary={item.text} 
-              primaryTypographyProps={{ 
-                fontWeight: isActivePath(item.path) ? 600 : 400 
-              }}
-            />
-          </ListItem>
-        ))}
-      </List>
-      <Box sx={{ mt: 'auto', p: 2 }}>
-        <Divider sx={{ mb: 2 }} />
-        <Button
-          onClick={handleLogout}
-          fullWidth
-          variant="outlined"
-          color="primary"
-          startIcon={<LogoutIcon />}
+            <ChevronLeftIcon />
+          </IconButton>
+        </Box>
+      </Zoom>
+      
+      <Divider sx={{ mx: 2, my: 2 }} />
+      
+      <Box sx={{ px: 2, mb: 3 }}>
+        <Paper
+          elevation={0}
           sx={{
-            justifyContent: 'flex-start',
-            px: 2,
-            py: 1
+            p: 2,
+            background: alpha(theme.palette.primary.main, 0.03),
+            borderRadius: 2,
+            border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`
           }}
         >
-          Logout
-        </Button>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
+            <Avatar
+              sx={{
+                width: 48,
+                height: 48,
+                bgcolor: theme.palette.primary.main
+              }}
+            >
+              A
+            </Avatar>
+            <Box>
+              <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                Admin User
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                admin@hisaabkaro.com
+              </Typography>
+            </Box>
+          </Box>
+        </Paper>
+      </Box>
+      
+      <List sx={{ px: 2 }}>
+        {menuItems.map((item, index) => (
+          <Fade in={true} style={{ transitionDelay: `${150 + index * 50}ms` }} key={item.text}>
+            <ListItem
+              button
+              onClick={() => {
+                navigate(item.path);
+                setIsSidebarOpen(false);
+              }}
+              sx={{
+                mb: 1,
+                borderRadius: 2,
+                backgroundColor: isActivePath(item.path) 
+                  ? alpha(theme.palette.primary.main, 0.1)
+                  : 'transparent',
+                color: isActivePath(item.path) 
+                  ? theme.palette.primary.main 
+                  : theme.palette.text.primary,
+                '&:hover': {
+                  backgroundColor: isActivePath(item.path) 
+                    ? alpha(theme.palette.primary.main, 0.15)
+                    : alpha(theme.palette.primary.main, 0.05),
+                },
+                transition: 'all 0.2s ease-in-out'
+              }}
+            >
+              <ListItemIcon 
+                sx={{ 
+                  color: isActivePath(item.path) 
+                    ? theme.palette.primary.main 
+                    : theme.palette.text.secondary,
+                  minWidth: 40
+                }}
+              >
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText 
+                primary={item.text} 
+                primaryTypographyProps={{ 
+                  fontWeight: isActivePath(item.path) ? 600 : 500,
+                  fontSize: '0.95rem'
+                }}
+              />
+              {isActivePath(item.path) && (
+                <Box
+                  sx={{
+                    width: 4,
+                    height: 35,
+                    borderRadius: 4,
+                    background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
+                    ml: 2,
+                    boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.4)}`
+                  }}
+                />
+              )}
+            </ListItem>
+          </Fade>
+        ))}
+      </List>
+
+      <Box sx={{ mt: 'auto', p: 3 }}>
+        <Divider sx={{ mb: 3 }} />
+        <Fade in={true} style={{ transitionDelay: '400ms' }}>
+          <Button
+            onClick={handleLogout}
+            fullWidth
+            variant="contained"
+            color="primary"
+            startIcon={<LogoutIcon />}
+            sx={{
+              py: 1.2,
+              borderRadius: 2,
+              textTransform: 'none',
+              fontSize: '0.95rem',
+              fontWeight: 500,
+              background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
+              boxShadow: `0 2px 12px ${alpha(theme.palette.primary.main, 0.4)}`,
+              '&:hover': {
+                background: `linear-gradient(45deg, ${theme.palette.primary.dark}, ${theme.palette.primary.main})`,
+              }
+            }}
+          >
+            Logout
+          </Button>
+        </Fade>
       </Box>
     </>
   );
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#f8fafc' }}>
       <CssBaseline />
       
-      {/* AppBar */}
-      <AppBar
-        position="fixed"
-        sx={{
-          width: { lg: `calc(100% - ${drawerWidth}px)` },
-          ml: { lg: `${drawerWidth}px` },
-          bgcolor: 'white',
-          boxShadow: 'none',
-          borderBottom: '1px solid',
-          borderColor: 'divider'
-        }}
-      >
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            edge="start"
-            onClick={() => setIsSidebarOpen(true)}
-            sx={{ mr: 2, display: { lg: 'none' }, color: 'text.primary' }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Box sx={{ flexGrow: 1 }} />
-          <Tooltip title="Admin">
-            <Avatar
-              sx={{
-                bgcolor: theme.palette.primary.main,
-                width: 40,
-                height: 40
-              }}
-            >
-              A
-            </Avatar>
-          </Tooltip>
-        </Toolbar>
-      </AppBar>
-
+      <Box sx={{ position: 'fixed', top: 16, left: 16, display: { lg: 'none' } }}>
+        <IconButton
+          onClick={() => setIsSidebarOpen(true)}
+          sx={{ 
+            bgcolor: 'white',
+            boxShadow: '0 2px 12px rgba(0,0,0,0.08)',
+            '&:hover': {
+              bgcolor: 'white',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
+            }
+          }}
+        >
+          <MenuIcon />
+        </IconButton>
+      </Box>
+      
       <Box
         component="nav"
         sx={{
@@ -192,28 +277,26 @@ function Layout({ children }) {
           flexShrink: { lg: 0 }
         }}
       >
-        {/* Mobile drawer */}
         <Drawer
           variant="temporary"
           open={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
           ModalProps={{
-            keepMounted: true // Better mobile performance
+            keepMounted: true
           }}
           sx={{
             display: { xs: 'block', lg: 'none' },
             '& .MuiDrawer-paper': {
               boxSizing: 'border-box',
               width: drawerWidth,
-              bgcolor: 'background.paper',
-              backgroundImage: 'none'
+              borderRight: 'none',
+              boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.08)'
             },
           }}
         >
           {drawer}
         </Drawer>
-        
-        {/* Desktop drawer */}
+
         <Drawer
           variant="permanent"
           sx={{
@@ -221,10 +304,8 @@ function Layout({ children }) {
             '& .MuiDrawer-paper': {
               boxSizing: 'border-box',
               width: drawerWidth,
-              bgcolor: 'background.paper',
-              backgroundImage: 'none',
-              border: 'none',
-              boxShadow: theme.shadows[1]
+              borderRight: 'none',
+              boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.08)'
             },
           }}
           open
@@ -237,21 +318,29 @@ function Layout({ children }) {
         component="main"
         sx={{
           flexGrow: 1,
-          height: '100vh',
-          overflow: 'auto',
-          backgroundColor: '#f5f7fb',
-          display: 'flex',
-          flexDirection: 'column'
+          p: { xs: 2, sm: 3 },
+          width: { lg: `calc(100% - ${drawerWidth}px)` },
+          minHeight: '100vh',
+          background: `linear-gradient(45deg, ${alpha(theme.palette.primary.main, 0.02)}, ${alpha(theme.palette.primary.light, 0.02)})`
         }}
       >
-        <Toolbar /> {/* Spacing for AppBar */}
         <Container 
           maxWidth="xl" 
           sx={{ 
-            flexGrow: 1,
-            py: 4,
-            px: { xs: 2, sm: 4 },
-            overflowY: 'auto'
+            height: '100%',
+            '& > *': {
+              animation: 'fadeIn 0.5s ease-out',
+              '@keyframes fadeIn': {
+                '0%': {
+                  opacity: 0,
+                  transform: 'translateY(10px)'
+                },
+                '100%': {
+                  opacity: 1,
+                  transform: 'translateY(0)'
+                }
+              }
+            }
           }}
         >
           {children}
@@ -261,8 +350,8 @@ function Layout({ children }) {
       <ResponseModal
         open={modalOpen}
         onClose={handleModalClose}
-        success={true}
-        message="Logging out... Please wait"
+        message="Logging out..."
+        severity="info"
       />
     </Box>
   );

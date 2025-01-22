@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Users.css';
 
@@ -8,6 +9,7 @@ const CACHE_KEY = 'admin_users_cache';
 const VIEW_MODE_KEY = 'admin_users_view_mode';
 
 function Users() {
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -662,7 +664,11 @@ function Users() {
               ))
             ) : (
               currentUsers.map((user, index) => (
-                <li key={user._id} className="p-4 hover:bg-gray-50">
+                <li 
+                  key={user._id} 
+                  className="p-4 hover:bg-gray-50 cursor-pointer"
+                  onClick={() => navigate(`/users/${user._id}`)}
+                >
                   <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                     {/* User Info Section */}
                     <div className="flex items-start gap-4 min-w-0 flex-1">
@@ -711,7 +717,7 @@ function Users() {
                             <span className="truncate">{user.phone || 'N/A'}</span>
                           </a>
                           <p className="text-sm text-gray-500 flex items-center">
-                            <svg className="w-4 h-4 mr-1.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg className="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                             Joined {formatDate(user.createdAt)}
@@ -803,7 +809,11 @@ function Users() {
             ))
           ) : (
             currentUsers.map((user, index) => (
-              <div key={user._id} className="relative bg-white p-6 rounded-lg shadow">
+              <div 
+                key={user._id} 
+                className="relative bg-white p-6 rounded-lg shadow cursor-pointer hover:shadow-md transition-shadow duration-200"
+                onClick={() => navigate(`/users/${user._id}`)}
+              >
                 {/* Index Badge */}
                 <div className="absolute -top-2 -left-2 h-6 w-6 flex items-center justify-center">
                   <div className="absolute inset-0 bg-indigo-100 rounded-full transform rotate-45"></div>

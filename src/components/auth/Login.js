@@ -71,7 +71,7 @@ const Login = () => {
     console.log('Attempting login...');
 
     try {
-      const response = await axios.post('http://localhost:5100/api/v1/admin/login', formData);
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/admin/login`, formData);
       console.log('Login response:', response.data);
       
       if (response.data.status === 'success') {
